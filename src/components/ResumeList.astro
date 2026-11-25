@@ -1,0 +1,9 @@
+---
+interface Props { items: (string | { label: string; details: string })[] }
+const { items } = Astro.props;
+---
+<ul class="list-disc space-y-1 pl-5">
+  {items.map((item) => (
+    <li>{typeof item === 'string' ? item : <><strong>{item.label}:</strong> {item.details}</>}</li>
+  ))}
+</ul>

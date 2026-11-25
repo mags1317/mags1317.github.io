@@ -1,0 +1,68 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  printResume?: boolean;
+}
+
+const { title, description, printResume = false } = Astro.props;
+const path = Astro.url.pathname;
+const button = 'rounded border border-slate-400 px-3 py-1.5 hover:bg-slate-100 dark:hover:bg-slate-800';
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={new URL(path, Astro.site)} />
+    <title>{title}</title>
+    <script is:inline>
+      try {
+        document.documentElement.classList.toggle('dark', localStorage.getItem('portfolio-theme') === 'dark');
+      } catch {
+        // The default theme remains available when browser storage is disabled.
+      }
+    </script>
+  </head>
+  <body class="bg-slate-50 font-sans leading-relaxed text-slate-800 dark:bg-slate-950 dark:text-slate-200">
+    <a href="#main" class="sr-only focus:not-sr-only print:hidden">Skip to content</a>
+    <header class="sticky top-0 z-10 border-b border-slate-200 bg-white/95 dark:border-slate-700 dark:bg-slate-900/95 print:hidden">
+      <div class="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-8">
+        <nav aria-label="Main navigation" class="flex items-center gap-5">
+          <a href="/" aria-current={path === '/' ? 'page' : undefined} class="font-semibold hover:underline">Résumé</a>
+          <a href="/projects/" aria-current={path === '/projects/' ? 'page' : undefined} class="font-semibold hover:underline">Projects</a>
+        </nav>
+        <div class="flex gap-2">
+          <button id="theme" type="button" class={button} aria-label="Dark theme" aria-pressed="false" hidden>Theme</button>
+          {printResume && <button id="print" type="button" class={button} hidden>Print / PDF</button>}
+        </div>
+      </div>
+    </header>
+    <slot />
+    <script>
+      const theme = document.querySelector<HTMLButtonElement>('#theme');
+      const root = document.documentElement;
+      if (theme) {
+        theme.hidden = false;
+        theme.setAttribute('aria-pressed', String(root.classList.contains('dark')));
+        theme.addEventListener('click', () => {
+          const isDark = root.classList.toggle('dark');
+          theme.setAttribute('aria-pressed', String(isDark));
+          try {
+            localStorage.setItem('portfolio-theme', isDark ? 'dark' : 'light');
+          } catch {
+            // The toggle still works for the current page.
+          }
+        });
+      }
+      const print = document.querySelector<HTMLButtonElement>('#print');
+      if (print) {
+        print.hidden = false;
+        print.addEventListener('click', () => window.print());
+      }
+    </script>
+  </body>
+</html>
