@@ -1,0 +1,22 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  :root { color-scheme: light; }
+  :root.dark { color-scheme: dark; }
+  a { text-underline-offset: 0.2em; }
+  :focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+}
+
+@page { margin: 14mm; }
+
+@media print {
+  :root, :root.dark { color-scheme: light; }
+  body { background: white !important; color: black !important; }
+  .resume { max-width: none; padding: 0; font-size: 10.5pt; line-height: 1.35; }
+  .resume * { color: black !important; }
+  .resume-card { background: transparent !important; border: 0; padding: 0; }
+  .resume h2, .resume h3 { break-after: avoid; line-height: 1.25; }
+  .resume li { break-inside: avoid; }
+  .resume p, .resume li { orphans: 2; widows: 2; }
+}

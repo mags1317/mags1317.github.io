@@ -1,0 +1,47 @@
+---
+import ResumeSection from '../components/ResumeSection.astro';
+import ResumeList from '../components/ResumeList.astro';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { resume } from '../data/resume';
+
+const link = 'text-blue-700 underline dark:text-blue-300';
+---
+<SiteLayout title={`${resume.name} – Résumé`} description="Professional résumé of Miguel Ángel García Sepúlveda." printResume>
+  <main id="main" class="resume mx-auto max-w-4xl px-4 py-8 sm:px-8">
+    <header class="mb-8 text-center print:mb-4">
+      <h1 class="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl dark:text-white print:text-2xl">{resume.name}</h1>
+      <div class="mt-3 flex flex-wrap justify-center gap-x-4 gap-y-1">
+        <a class={link} href={`mailto:${resume.email}`}>{resume.email}</a>
+        <a class={link} href={`tel:${resume.phone.replaceAll(' ', '')}`}>{resume.phone}</a>
+      </div>
+      <div class="mt-1 flex flex-wrap justify-center gap-x-4 gap-y-1">
+        <a class={link} href={resume.githubProfile}>GitHub</a>
+        <a class={link} href={resume.github}>GitHub profile README</a>
+        <a class={link} href={resume.linkedin}>LinkedIn</a>
+      </div>
+    </header>
+    <ResumeSection title="Professional Summary"><p>{resume.summary}</p></ResumeSection>
+    <ResumeSection title="Core Competencies"><ResumeList items={resume.competencies} /></ResumeSection>
+    <ResumeSection title="Tools"><ResumeList items={resume.tools} /></ResumeSection>
+    <ResumeSection title="Professional Experience">
+      <div class="space-y-6 print:space-y-3">
+        {resume.experience.map((job) => (
+          <article>
+            <h3 class="font-semibold">{job.role} – {job.employer}</h3>
+            <p class="mb-2 text-sm text-slate-600 dark:text-slate-300">{job.dates}</p>
+            <ResumeList items={job.highlights} />
+            {job.projects.length > 0 && (
+              <>
+                <p class="mt-2 font-medium">Highlighted Projects:</p>
+                <ResumeList items={job.projects} />
+              </>
+            )}
+          </article>
+        ))}
+      </div>
+    </ResumeSection>
+    <ResumeSection title="Education"><p>{resume.education}</p></ResumeSection>
+    <ResumeSection title="Languages"><ResumeList items={resume.languages} /></ResumeSection>
+    <ResumeSection title="Certifications & Professional Development"><ResumeList items={resume.certifications} /></ResumeSection>
+  </main>
+</SiteLayout>
